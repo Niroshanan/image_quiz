@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_quiz/models/quiz_model.dart';
 import 'package:image_quiz/widgets/key_pad.dart';
 import 'package:image_quiz/widgets/my_app_bar.dart';
+import 'package:image_quiz/widgets/result.dart';
 import 'package:image_quiz/widgets/timer_widget.dart';
 import 'package:image_quiz/widgets/topbar.dart';
 import 'package:linear_timer/linear_timer.dart';
@@ -51,10 +52,13 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               Timer.periodic(const Duration(seconds: 1), (timer) {
                 setState(() {
                   _timeRemaining--;
+                  isTimerStarted = true;
                 });
                 if (_timeRemaining == 0) {
                   timer.cancel();
-                  _isTimeFinished = true;
+                  setState(() {
+                    _isTimeFinished = true;
+                  });
                 }
               });
             }
@@ -114,7 +118,10 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                       : _image),
               Expanded(
                 child: _isTimeFinished
-                    ? Container()
+                    ? Result(
+                        score: _score,
+                        totalQuestions: _questionNumber,
+                      )
                     : KeyPad(onSubmitPressed: checkAnswer),
               )
             ],
