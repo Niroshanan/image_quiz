@@ -18,7 +18,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   late Future<QuizModel> futureQuiz;
   late LinearTimerController timerController = LinearTimerController(this);
-  Duration duration = const Duration(seconds: 10);
+  int _timeRemaining = 10;
+  bool isTimerStarted = false;
   bool _loading = true;
   bool _isTimeFinished = false;
   late int _solution;
@@ -46,7 +47,17 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               _loading = false;
             });
             timerController.start();
-            Timer.periodic(const Duration(seconds: 1), (timer) {});
+            if (!isTimerStarted) {
+              Timer.periodic(const Duration(seconds: 1), (timer) {
+                setState(() {
+                  _timeRemaining--;
+                });
+                if (_timeRemaining == 0) {
+                  timer.cancel();
+                  _isTimeFinished = true;
+                }
+              });
+            }
           },
         ),
       );
@@ -59,12 +70,6 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     }
     _questionNumber++;
     _startQuiz();
-  }
-
-  void disableKeyPad() {
-    setState(() {
-      _isTimeFinished = true;
-    });
   }
 
   @override
@@ -98,8 +103,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
             children: [
               TimerWidget(
                 timerController: timerController,
-                duration: duration,
-                onTimerEnd: disableKeyPad,
+                duration: _timeRemaining,
               ),
               SizedBox(
                   height: 200,

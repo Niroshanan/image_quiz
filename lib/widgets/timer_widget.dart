@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:linear_timer/linear_timer.dart';
 
 class TimerWidget extends StatelessWidget {
-  const TimerWidget(
-      {super.key,
-      required this.timerController,
-      required this.duration,
-      required this.onTimerEnd});
+  const TimerWidget({
+    super.key,
+    required this.timerController,
+    required this.duration,
+  });
 
   final LinearTimerController timerController;
-  final Duration duration;
-  final void Function() onTimerEnd;
+  final int duration;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,20 +22,19 @@ class TimerWidget extends StatelessWidget {
               child: LinearTimer(
                 forward: false,
                 minHeight: 10,
-                duration: duration,
+                duration: Duration(seconds: duration),
                 controller: timerController,
                 color: Colors.blue,
-                onTimerEnd: onTimerEnd,
               ),
             )
           ]),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                'Time Remaining: ',
+                'Time Remaining: $duration s',
                 textAlign: TextAlign.right,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
