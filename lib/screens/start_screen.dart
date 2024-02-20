@@ -1,14 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_quiz/my_app.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
 
   void startquiz(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const MyApp()));
+    Navigator.of(context).pushNamed('/quiz_screen');
   }
 
   @override

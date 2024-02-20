@@ -17,7 +17,10 @@ class TimerWidget extends StatelessWidget {
       child: Column(
         children: [
           Row(children: [
-            const Icon(Icons.timer),
+            const Icon(
+              Icons.timer,
+              color: Colors.white,
+            ),
             Expanded(
               child: LinearTimer(
                 forward: false,
