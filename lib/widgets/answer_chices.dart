@@ -59,7 +59,7 @@ class _AnswerChoicesState extends State<AnswerChoices> {
                       ),
                     ),
                   ),
-                  onPressed: (){
+                  onPressed: () {
                     answerQuestion();
                   },
                   child: const Text('Submit'),

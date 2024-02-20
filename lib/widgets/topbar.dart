@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class TopBar extends StatelessWidget {
-  const TopBar({super.key});
+  const TopBar({super.key, required this.questionNumber, required this.score});
+  final int questionNumber;
+  final int score;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +46,8 @@ class TopBar extends StatelessWidget {
               ],
             ),
           ),
-          const Padding(
-              padding: EdgeInsets.symmetric(
+          Padding(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 8,
               ),
@@ -53,15 +55,15 @@ class TopBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Quiz No: ',
-                    style: TextStyle(
+                    'Score: $score',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
                   ),
                   Text(
-                    'Score: ',
-                    style: TextStyle(
+                    'Quiz No: $questionNumber',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),

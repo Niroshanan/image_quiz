@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_quiz/models/quiz_model.dart';
-import 'package:image_quiz/widgets/answer_chices.dart';
+import 'package:image_quiz/widgets/key_pad.dart';
 import 'package:image_quiz/widgets/my_app_bar.dart';
 import 'package:image_quiz/widgets/timer_widget.dart';
 import 'package:image_quiz/widgets/topbar.dart';
@@ -17,25 +17,37 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   late Future<QuizModel> futureQuiz;
   late LinearTimerController timerController = LinearTimerController(this);
   Duration duration = const Duration(seconds: 10);
+  bool _isImageUrlSet = false;
+  late String _imageUrl;
+  late int _solution;
+  int _score = 0;
+  int _questionNumber = 0;
 
   @override
   void initState() {
     super.initState();
-    futureQuiz = fetchQuiz();
+    _startQuiz();
   }
 
-  void onSubmitPressed(String selectedAnswer) {
-    futureQuiz.then((quizModel) {
-      if (selectedAnswer == quizModel.solution.toString()) {
-      } else {
-        // The selected answer is incorrect
-        print('Incorrect answer!');
-        // Perform any actions you want for an incorrect answer
-      }
-    }).catchError((error) {
-      // Handle any errors that occur during fetching quiz data
-      print("Error fetching quiz: $error");
+  void _startQuiz() {
+    futureQuiz = fetchQuiz();
+    futureQuiz.then((value) {
+      setState(() {
+        _isImageUrlSet = true;
+        _imageUrl = value.question;
+        _solution = value.solution;
+      });
     });
+  }
+
+  void checkAnswer(String selectedAnswer) {
+    if (selectedAnswer == _solution.toString()) {
+      timerController.stop();
+      timerController.reset();
+      _score++;
+    }
+    _questionNumber++;
+    _startQuiz();
   }
 
   @override
@@ -48,9 +60,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 129, 4, 148),
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         height: 150,
-        child: TopBar(),
+        child: TopBar(questionNumber: _questionNumber, score: _score),
       ),
       body: Center(
         child: Container(
@@ -65,31 +77,29 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               end: Alignment.bottomCenter,
             ),
           ),
-          child: Column(children: [
-            TimerWidget(
-              timerController: timerController,
-            ),
-            FutureBuilder(
-              future: futureQuiz,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  timerController.start();
-                  return Image.network(snapshot.data!.question);
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-                return const CircularProgressIndicator();
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: AnswerChoices(
-                onSubmitPressed: onSubmitPressed,
+          child: Column(
+            children: [
+              TimerWidget(
+                timerController: timerController,
+                duration: duration,
               ),
-            )
-          ]),
+              SizedBox(
+                height: 200,
+                child: _isImageUrlSet
+                    ? Image.network(
+                        _imageUrl,
+                        fit: BoxFit.scaleDown,
+                      )
+                    : const LinearProgressIndicator(
+                        color: Color.fromARGB(255, 233, 176, 243),
+                      ),
+              ),
+              
+              Expanded(
+                child: KeyPad(onSubmitPressed: checkAnswer),
+              )
+            ],
+          ),
         ),
       ),
     );
