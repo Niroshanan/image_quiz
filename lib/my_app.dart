@@ -17,11 +17,11 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   late Future<QuizModel> futureQuiz;
   late LinearTimerController timerController = LinearTimerController(this);
   Duration duration = const Duration(seconds: 10);
-  bool _isImageUrlSet = false;
-  late String _imageUrl;
+  bool _loading = true;
   late int _solution;
   int _score = 0;
   int _questionNumber = 0;
+  late Image _image;
 
   @override
   void initState() {
@@ -33,10 +33,20 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     futureQuiz = fetchQuiz();
     futureQuiz.then((value) {
       setState(() {
-        _isImageUrlSet = true;
-        _imageUrl = value.question;
         _solution = value.solution;
       });
+      _image = Image.network(value.question);
+      _image.image.resolve(const ImageConfiguration()).addListener(
+        ImageStreamListener(
+          (info, call) {
+            setState(() {
+              _loading = false;
+            });
+            timerController.reset();
+            timerController.start();
+          },
+        ),
+      );
     });
   }
 
@@ -84,17 +94,12 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                 duration: duration,
               ),
               SizedBox(
-                height: 200,
-                child: _isImageUrlSet
-                    ? Image.network(
-                        _imageUrl,
-                        fit: BoxFit.scaleDown,
-                      )
-                    : const LinearProgressIndicator(
-                        color: Color.fromARGB(255, 233, 176, 243),
-                      ),
-              ),
-              
+                  height: 200,
+                  child: _loading
+                      ? const LinearProgressIndicator(
+                          color: Color.fromARGB(255, 233, 176, 243),
+                        )
+                      : _image),
               Expanded(
                 child: KeyPad(onSubmitPressed: checkAnswer),
               )

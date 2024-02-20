@@ -26,7 +26,18 @@ class TimerWidget extends StatelessWidget {
               ),
             )
           ]),
-          const Text('Time Remaining'),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'Time Remaining',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
