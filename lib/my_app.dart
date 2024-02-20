@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   late Future<QuizModel> futureQuiz;
   late LinearTimerController timerController = LinearTimerController(this);
-  int _timeRemaining = 10;
+  int _timeRemaining = 60;
   bool isTimerStarted = false;
   bool _loading = true;
   bool _isTimeFinished = false;
@@ -110,12 +110,16 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                 duration: _timeRemaining,
               ),
               SizedBox(
-                  height: 200,
-                  child: _loading
-                      ? const LinearProgressIndicator(
-                          color: Color.fromARGB(255, 233, 176, 243),
-                        )
-                      : _image),
+                height: 180,
+                child: _loading
+                    ? const LinearProgressIndicator(
+                        color: Color.fromARGB(255, 233, 176, 243),
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: _image,
+                      ),
+              ),
               Expanded(
                 child: _isTimeFinished
                     ? Result(
