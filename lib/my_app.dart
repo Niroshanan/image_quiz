@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_quiz/models/quiz_model.dart';
 import 'package:image_quiz/widgets/key_pad.dart';
@@ -18,10 +20,11 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   late LinearTimerController timerController = LinearTimerController(this);
   Duration duration = const Duration(seconds: 10);
   bool _loading = true;
+  bool _isTimeFinished = false;
   late int _solution;
+  late Image _image;
   int _score = 0;
   int _questionNumber = 0;
-  late Image _image;
 
   @override
   void initState() {
@@ -42,8 +45,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
             setState(() {
               _loading = false;
             });
-            timerController.reset();
             timerController.start();
+            Timer.periodic(const Duration(seconds: 1), (timer) {});
           },
         ),
       );
@@ -52,12 +55,16 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   void checkAnswer(String selectedAnswer) {
     if (selectedAnswer == _solution.toString()) {
-      timerController.stop();
-      timerController.reset();
       _score++;
     }
     _questionNumber++;
     _startQuiz();
+  }
+
+  void disableKeyPad() {
+    setState(() {
+      _isTimeFinished = true;
+    });
   }
 
   @override
@@ -92,6 +99,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
               TimerWidget(
                 timerController: timerController,
                 duration: duration,
+                onTimerEnd: disableKeyPad,
               ),
               SizedBox(
                   height: 200,
@@ -101,7 +109,9 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                         )
                       : _image),
               Expanded(
-                child: KeyPad(onSubmitPressed: checkAnswer),
+                child: _isTimeFinished
+                    ? Container()
+                    : KeyPad(onSubmitPressed: checkAnswer),
               )
             ],
           ),

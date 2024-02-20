@@ -3,10 +3,14 @@ import 'package:linear_timer/linear_timer.dart';
 
 class TimerWidget extends StatelessWidget {
   const TimerWidget(
-      {super.key, required this.timerController, required this.duration});
+      {super.key,
+      required this.timerController,
+      required this.duration,
+      required this.onTimerEnd});
 
   final LinearTimerController timerController;
   final Duration duration;
+  final void Function() onTimerEnd;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,7 +26,7 @@ class TimerWidget extends StatelessWidget {
                 duration: duration,
                 controller: timerController,
                 color: Colors.blue,
-                onTimerEnd: () {},
+                onTimerEnd: onTimerEnd,
               ),
             )
           ]),
@@ -30,7 +34,7 @@ class TimerWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                'Time Remaining',
+                'Time Remaining: ',
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Colors.white,
