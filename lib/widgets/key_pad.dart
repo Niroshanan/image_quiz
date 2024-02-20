@@ -47,12 +47,12 @@ class _KeyPadState extends State<KeyPad> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            const SizedBox(width: 30),
+            const SizedBox(width: 20),
             SignleButton(
                 label: '0',
                 onPressed: _onButtonPressed,
                 selectedAnswer: _selectedAnswer),
-            const SizedBox(width: 50),
+            const SizedBox(width: 35),
             Expanded(
               child: ElevatedButton(
                 style: ButtonStyle(
@@ -66,7 +66,7 @@ class _KeyPadState extends State<KeyPad> {
                     ),
                   ),
                   fixedSize: MaterialStateProperty.all(
-                    const Size(50, 40),
+                    const Size(80, 80),
                   ),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
@@ -78,6 +78,7 @@ class _KeyPadState extends State<KeyPad> {
                 child: const Text('Submit'),
               ),
             ),
+            const SizedBox(width: 20),
           ],
         )
       ],

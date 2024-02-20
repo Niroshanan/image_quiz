@@ -14,27 +14,18 @@ class SignleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isSelected = selectedAnswer == label;
-    return TextButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.pressed)) {
-            return Colors.blue;
-          }
-          // return Colors.green;
-          return isSelected ? Colors.blue : Colors.white;
-        }),
-        textStyle: MaterialStateProperty.all(
-          const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Colors.purple, width: 3),
+          backgroundColor: isSelected ? Colors.green : Colors.white,
+          fixedSize: const Size(80, 70),
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-        ),
-      ),
+          textStyle: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          )),
       onPressed: () {
         onPressed(label);
       },
