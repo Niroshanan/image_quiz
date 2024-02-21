@@ -8,7 +8,6 @@ import 'package:image_quiz/widgets/my_app_bar.dart';
 import 'package:image_quiz/widgets/result.dart';
 import 'package:image_quiz/widgets/timer_widget.dart';
 import 'package:image_quiz/widgets/topbar.dart';
-import 'package:linear_timer/linear_timer.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -17,12 +16,11 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late Future<QuizModel> futureQuiz;
-  late LinearTimerController timerController = LinearTimerController(this);
   Timer? _timer;
-  int _timeRemaining = 60;
+  int quizDuration = 60;
+  late int _timeRemaining;
   bool _loading = true;
   bool _isTimeFinished = false;
   late int _solution;
@@ -33,6 +31,7 @@ class _MyAppState extends State<MyApp>
   @override
   void initState() {
     super.initState();
+    _timeRemaining = quizDuration;
     WidgetsBinding.instance.addObserver(this);
     _startQuiz();
   }
@@ -49,7 +48,6 @@ class _MyAppState extends State<MyApp>
           (info, call) {
             setState(() {
               _loading = false;
-              timerController.start();
               startTimer();
             });
           },
@@ -98,7 +96,6 @@ class _MyAppState extends State<MyApp>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    timerController.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -135,8 +132,8 @@ class _MyAppState extends State<MyApp>
             child: Column(
               children: [
                 TimerWidget(
-                  timerController: timerController,
-                  duration: _timeRemaining,
+                  timeRemaining: _timeRemaining,
+                  duration: quizDuration,
                 ),
                 SizedBox(
                   height: 180,

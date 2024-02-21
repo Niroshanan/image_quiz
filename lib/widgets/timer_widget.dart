@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:linear_timer/linear_timer.dart';
 
 class TimerWidget extends StatelessWidget {
   const TimerWidget({
     super.key,
-    required this.timerController,
     required this.duration,
+    required this.timeRemaining,
   });
-
-  final LinearTimerController timerController;
+  final int timeRemaining;
   final int duration;
   @override
   Widget build(BuildContext context) {
@@ -22,12 +20,11 @@ class TimerWidget extends StatelessWidget {
               color: Colors.white,
             ),
             Expanded(
-              child: LinearTimer(
-                forward: false,
-                minHeight: 10,
-                duration: Duration(seconds: duration),
-                controller: timerController,
-                color: Colors.blue,
+              child: LinearProgressIndicator(
+                value: timeRemaining / duration,
+                backgroundColor: Colors.white,
+                color: timeRemaining < 10 ? Colors.red : Colors.blue,
+                minHeight: 10.0,
               ),
             )
           ]),
@@ -35,7 +32,7 @@ class TimerWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                'Time Remaining: $duration s',
+                'Time Remaining: $timeRemaining s',
                 textAlign: TextAlign.right,
                 style: const TextStyle(
                   color: Colors.white,
