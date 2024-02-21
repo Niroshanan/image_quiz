@@ -146,6 +146,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           child: _image,
                         ),
                 ),
+                const SizedBox(height: 20),
                 Expanded(
                   child: _isTimeFinished
                       ? Result(

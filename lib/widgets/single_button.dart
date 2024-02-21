@@ -23,7 +23,7 @@ class SignleButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
           ),
           textStyle: const TextStyle(
-            fontSize: 24,
+            fontSize: 44,
             fontWeight: FontWeight.bold,
           )),
       onPressed: () {
