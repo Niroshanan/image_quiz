@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_quiz/helpers/interaction_helpers.dart.dart';
 import 'package:image_quiz/widgets/single_button.dart';
 
 class KeyPad extends StatefulWidget {
@@ -32,8 +33,12 @@ class _KeyPadState extends State<KeyPad> {
   }
 
   void submitAnswer() {
-    widget.onSubmitPressed(_selectedAnswer);
-    _selectedAnswer = '';
+    if (_selectedAnswer.isNotEmpty) {
+      widget.onSubmitPressed(_selectedAnswer);
+      _selectedAnswer = '';
+    } else {
+      showSnackBar(context, 'Please select an answer', false);
+    }
   }
 
   @override

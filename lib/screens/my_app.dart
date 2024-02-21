@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:image_quiz/helpers/interaction_helpers.dart.dart';
 import 'package:image_quiz/models/quiz_model.dart';
 import 'package:image_quiz/widgets/key_pad.dart';
 import 'package:image_quiz/widgets/my_app_bar.dart';
@@ -16,11 +17,12 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
+class _MyAppState extends State<MyApp>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late Future<QuizModel> futureQuiz;
   late LinearTimerController timerController = LinearTimerController(this);
+  Timer? _timer;
   int _timeRemaining = 60;
-  bool isTimerStarted = false;
   bool _loading = true;
   bool _isTimeFinished = false;
   late int _solution;
@@ -31,6 +33,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _startQuiz();
   }
 
@@ -56,68 +59,47 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   }
 
   void startTimer() {
-    if (!isTimerStarted) {
-      Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          _timeRemaining--;
-          isTimerStarted = true;
-        });
-        if (_timeRemaining == 0) {
-          timer.cancel();
-          setState(() {
-            _isTimeFinished = true;
-          });
-        }
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _timeRemaining--;
       });
-    }
+      if (_timeRemaining == 0) {
+        timer.cancel();
+        setState(() {
+          _isTimeFinished = true;
+        });
+      }
+    });
   }
 
   void checkAnswer(String selectedAnswer) {
     if (selectedAnswer == _solution.toString()) {
       _score++;
+      showSnackBar(context, 'Correct Answer', true);
+    } else {
+      showSnackBar(context, 'Incorrect Answer', false);
     }
+
     _questionNumber++;
     _startQuiz();
   }
 
-  void _showBackDialog() {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Are you sure?'),
-          content: const Text(
-            'Are you sure you want to leave this page?',
-          ),
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('No'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Yes'),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
+      _timer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      startTimer();
+    }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     timerController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -129,7 +111,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         if (didPop) {
           return;
         }
-        _showBackDialog();
+        exitConfirmation(context);
       },
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 129, 4, 148),
