@@ -27,13 +27,13 @@ void exitConfirmation(
   );
 }
 
-void showSnackBar(BuildContext context, String message , bool isCorrect) {
+void showSnackBar(BuildContext context, String message, bool isCorrect) {
   ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       backgroundColor: isCorrect ? Colors.green : Colors.red,
       content: Text(message),
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 1),
     ),
   );
 }

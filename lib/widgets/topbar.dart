@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 class TopBar extends StatelessWidget {
@@ -37,7 +35,7 @@ class TopBar extends StatelessWidget {
                     angle: 3.14,
                     child: IconButton(
                       onPressed: () {
-                        exit(1);
+                        Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.exit_to_app),
                     ),
