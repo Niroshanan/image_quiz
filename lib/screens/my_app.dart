@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       setState(() {
         _timeRemaining--;
       });
-      if (_timeRemaining == 0) {
+      if (_timeRemaining < 1) {
         timer.cancel();
         setState(() {
           _isTimeFinished = true;
